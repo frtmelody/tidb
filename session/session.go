@@ -2165,6 +2165,7 @@ func (s *session) PrepareTxnCtx(ctx context.Context) {
 	if s.txn.validOrPending() {
 		return
 	}
+	fmt.Println("Hello World!")
 
 	is := domain.GetDomain(s).InfoSchema()
 	s.sessionVars.TxnCtx = &variable.TransactionContext{

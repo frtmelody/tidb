@@ -231,26 +231,26 @@ func (st *TxnState) Commit(ctx context.Context) error {
 	}
 
 	// mockCommitError8942 is used for PR #8942.
-	failpoint.Inject("mockCommitError8942", func(val failpoint.Value) {
+	if val, _err_ := failpoint.Eval(_curpkg_("mockCommitError8942")); _err_ == nil {
 		if val.(bool) {
-			failpoint.Return(kv.ErrTxnRetryable)
+			return kv.ErrTxnRetryable
 		}
-	})
+	}
 
 	// mockCommitRetryForAutoIncID is used to mock an commit retry for adjustAutoIncrementDatum.
-	failpoint.Inject("mockCommitRetryForAutoIncID", func(val failpoint.Value) {
+	if val, _err_ := failpoint.Eval(_curpkg_("mockCommitRetryForAutoIncID")); _err_ == nil {
 		if val.(bool) && !mockAutoIncIDRetry() {
 			enableMockAutoIncIDRetry()
-			failpoint.Return(kv.ErrTxnRetryable)
+			return kv.ErrTxnRetryable
 		}
-	})
+	}
 
-	failpoint.Inject("mockCommitRetryForAutoRandID", func(val failpoint.Value) {
+	if val, _err_ := failpoint.Eval(_curpkg_("mockCommitRetryForAutoRandID")); _err_ == nil {
 		if val.(bool) && needMockAutoRandIDRetry() {
 			decreaseMockAutoRandIDRetryCount()
-			failpoint.Return(kv.ErrTxnRetryable)
+			return kv.ErrTxnRetryable
 		}
-	})
+	}
 
 	return st.Transaction.Commit(ctx)
 }
